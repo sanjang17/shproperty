@@ -240,6 +240,15 @@
       prevent: ({ el }) => {
         return el.classList && el.classList.contains("glightbox");
       },
+      views: [
+        {
+          namespace: "kpr",
+
+          afterEnter() {
+            initKPR();
+          },
+        },
+      ],
       transitions: [
         {
           name: "liquid-glass",
@@ -346,3 +355,312 @@
 
   document.addEventListener("scroll", toggleScrolled);
 })();
+
+let dataAmortisasi = [];
+let cicilanGlobal = 0; // Menyimpan nilai asli cicilan untuk kalkulasi PDF yang akurat
+
+// ========================================
+// FORMATTER UTILITY
+// ========================================
+
+function bersihkanAngka(stringFormat) {
+  return parseFloat((stringFormat || "").replace(/\./g, "")) || 0;
+}
+
+function formatRupiahOutput(angka) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(angka);
+}
+
+function formatInputRupiah(input) {
+  if (!input) return;
+  let value = input.value.replace(/[^0-9]/g, "");
+
+  if (value !== "") {
+    input.value = new Intl.NumberFormat("id-ID").format(value);
+  } else {
+    input.value = "";
+  }
+}
+
+// ========================================
+// LOGIKA PERHITUNGAN KPR
+// ========================================
+
+function hitungDPRupiah() {
+  const hargaElemen = document.getElementById("harga");
+  const dpPersenElemen = document.getElementById("dpPersen");
+  const dpRupiahElemen = document.getElementById("dpRupiah");
+
+  if (!hargaElemen || !dpPersenElemen || !dpRupiahElemen) return;
+
+  const harga = bersihkanAngka(hargaElemen.value);
+  let dpPersen = parseFloat(dpPersenElemen.value) || 0;
+
+  if (dpPersen > 100) {
+    dpPersen = 100;
+    dpPersenElemen.value = 100;
+  }
+
+  const dpRupiah = (harga * dpPersen) / 100;
+  dpRupiahElemen.value = new Intl.NumberFormat("id-ID").format(dpRupiah);
+}
+
+function hitungKPR() {
+  const harga = bersihkanAngka(document.getElementById("harga").value);
+  const dp = bersihkanAngka(document.getElementById("dpRupiah").value);
+  const bungaTahunan = parseFloat(document.getElementById("bunga").value);
+  const tenorRaw = parseFloat(document.getElementById("tenor").value);
+
+  const errorMsg = document.getElementById("error-msg");
+  const hasilContainer = document.getElementById("hasil-container");
+
+  if (harga === 0 || dp === 0 || isNaN(bungaTahunan) || isNaN(tenorRaw)) {
+    errorMsg.style.display = "block";
+    errorMsg.textContent = "Mohon isi semua kolom dengan benar.";
+    hasilContainer.style.display = "none";
+    return;
+  }
+
+  const pokokPinjaman = harga - dp;
+
+  if (pokokPinjaman <= 0) {
+    errorMsg.style.display = "block";
+    errorMsg.textContent = "DP tidak boleh lebih besar dari harga properti.";
+    hasilContainer.style.display = "none";
+    return;
+  }
+
+  errorMsg.style.display = "none";
+
+  // LOGIKA: Deteksi Tenor Bulan (< 1) atau Tahun (>= 1)
+  let n = 0;
+  if (tenorRaw < 1) {
+    n = Math.round(tenorRaw * 10);
+  } else {
+    n = Math.round(tenorRaw * 12);
+  }
+
+  const r = bungaTahunan / 100 / 12;
+  let cicilanPerBulan;
+
+  if (r === 0) {
+    cicilanPerBulan = pokokPinjaman / n;
+  } else {
+    const faktor = Math.pow(1 + r, n);
+    cicilanPerBulan = pokokPinjaman * ((r * faktor) / (faktor - 1));
+  }
+
+  cicilanGlobal = cicilanPerBulan;
+
+  document.getElementById("out-pokok").textContent =
+    formatRupiahOutput(pokokPinjaman);
+  document.getElementById("out-cicilan").textContent =
+    formatRupiahOutput(cicilanPerBulan) + " / bulan";
+
+  hasilContainer.style.display = "block";
+  document.getElementById("downloadPdf").style.display = "inline-block";
+
+  buatTabelAmortisasi(pokokPinjaman, bungaTahunan, n, cicilanPerBulan);
+}
+
+function buatTabelAmortisasi(
+  pokokPinjaman,
+  bungaTahunan,
+  totalBulan,
+  cicilanPerBulan,
+) {
+  dataAmortisasi = [];
+  let saldo = pokokPinjaman;
+  let bungaBulanan = bungaTahunan / 100 / 12;
+
+  const bulanIndonesia = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+
+  let tanggal = new Date();
+
+  for (let i = 1; i <= totalBulan; i++) {
+    let bunga = saldo * bungaBulanan;
+    let pokok = cicilanPerBulan - bunga;
+
+    saldo -= pokok;
+    if (saldo < 0) saldo = 0;
+
+    let namaBulan =
+      bulanIndonesia[tanggal.getMonth()] + " " + tanggal.getFullYear();
+
+    dataAmortisasi.push([
+      namaBulan,
+      formatRupiahOutput(cicilanPerBulan),
+      formatRupiahOutput(pokok),
+      formatRupiahOutput(bunga),
+      formatRupiahOutput(saldo),
+    ]);
+
+    tanggal.setMonth(tanggal.getMonth() + 1);
+  }
+}
+
+// ========================================
+// EXPORT PDF
+// ========================================
+
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("l", "mm", "a4");
+
+  const harga = bersihkanAngka(document.getElementById("harga").value);
+  const dpRupiah = bersihkanAngka(document.getElementById("dpRupiah").value);
+  const dpPersen = document.getElementById("dpPersen").value;
+  const bunga = document.getElementById("bunga").value;
+  const tenorRaw = parseFloat(document.getElementById("tenor").value);
+
+  let totalBulan = 0;
+  let labelTenor = "";
+
+  if (tenorRaw < 1) {
+    totalBulan = Math.round(tenorRaw * 10);
+    labelTenor = totalBulan + " Bulan";
+  } else {
+    totalBulan = Math.round(tenorRaw * 12);
+    labelTenor = tenorRaw + " Tahun";
+  }
+
+  const pinjaman = harga - dpRupiah;
+  const totalBayar = cicilanGlobal * totalBulan;
+  const totalBunga = totalBayar - pinjaman;
+
+  doc.setFontSize(18);
+  doc.text("SIMULASI KPR SH PROPERTY", 14, 15);
+  doc.setFontSize(9);
+  doc.text("Tanggal Cetak : " + new Date().toLocaleDateString("id-ID"), 14, 22);
+
+  doc.setFontSize(12);
+  doc.text("DETAIL PROPERTI", 14, 35);
+  doc.setFontSize(10);
+  doc.text("Harga Properti : " + formatRupiahOutput(harga), 14, 45);
+  doc.text(
+    "DP : " + formatRupiahOutput(dpRupiah) + " (" + dpPersen + "%)",
+    14,
+    52,
+  );
+  doc.text("Pinjaman : " + formatRupiahOutput(pinjaman), 14, 59);
+  doc.text("Bunga : " + bunga + "%", 14, 66);
+  doc.text("Tenor : " + labelTenor, 14, 73);
+
+  doc.setFontSize(12);
+  doc.text("RINGKASAN PEMBIAYAAN", 180, 35);
+  doc.setFontSize(10);
+  doc.text("Cicilan / Bulan : " + formatRupiahOutput(cicilanGlobal), 180, 45);
+  doc.text("Total Pembayaran : " + formatRupiahOutput(totalBayar), 180, 52);
+  doc.text("Total Bunga : " + formatRupiahOutput(totalBunga), 180, 59);
+  doc.text("Lama Kredit : " + totalBulan + " Bulan", 180, 66);
+
+  doc.line(14, 80, 280, 80);
+
+  doc.autoTable({
+    startY: 85,
+    head: [["Bulan", "Cicilan", "Pokok", "Bunga", "Sisa Pinjaman"]],
+    body: dataAmortisasi,
+    styles: { fontSize: 8, cellPadding: 2 },
+    headStyles: { fillColor: [13, 110, 253], textColor: [255, 255, 255] },
+    alternateRowStyles: { fillColor: [245, 245, 245] },
+  });
+
+  const pageHeight = doc.internal.pageSize.height;
+  doc.setFontSize(8);
+  doc.text("Generated by SH Property", 14, pageHeight - 5);
+
+  doc.save("Simulasi-KPR-SH-Property.pdf");
+}
+
+// ========================================
+// INITIALIZATION & BARBA JS INTEGRATION
+// ========================================
+
+function initKPR() {
+  const harga = document.getElementById("harga");
+  const dpRupiah = document.getElementById("dpRupiah");
+  const dpPersen = document.getElementById("dpPersen");
+  const downloadPdf = document.getElementById("downloadPdf");
+  const btnHitung = document.getElementById("btnHitung"); // Pastikan id tombol hitung Anda sesuai
+
+  // Jika element tidak ditemukan di halaman aktif, hentikan fungsi agar tidak error
+  if (!harga) return;
+
+  // Reset value formatting jika halaman baru dimuat
+  if (harga.value) formatInputRupiah(harga);
+  if (dpRupiah && dpRupiah.value) formatInputRupiah(dpRupiah);
+
+  // Gunakan penugasan event langsung (bukan addEventListener)
+  // untuk mencegah penumpukan event listener akibat cache Barba
+  harga.oninput = function () {
+    formatInputRupiah(this);
+    hitungDPRupiah();
+  };
+
+  if (dpRupiah) {
+    dpRupiah.oninput = function () {
+      formatInputRupiah(this);
+    };
+  }
+
+  if (dpPersen) {
+    dpPersen.oninput = function () {
+      hitungDPRupiah();
+    };
+  }
+
+  if (btnHitung) {
+    btnHitung.onclick = function (e) {
+      e.preventDefault();
+      hitungKPR();
+    };
+  }
+
+  if (downloadPdf) {
+    downloadPdf.onclick = function (e) {
+      e.preventDefault();
+      generatePDF();
+    };
+  }
+
+  // Hitung DP awal jika harga & persen sudah ada default-nya
+  if (dpPersen && !dpRupiah.value) {
+    hitungDPRupiah();
+  }
+}
+
+// SCENARIO 1: Jalankan jika user mendarat/refresh langsung di halaman KPR
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initKPR);
+} else {
+  initKPR();
+}
+
+// SCENARIO 2: Jalankan via Barba.js saat transisi halaman selesai
+if (typeof barba !== "undefined") {
+  // Gunakan hook 'after' + setTimeout tipis untuk menjamin DOM sudah ter-render sempurna
+  barba.hooks.after((data) => {
+    if (data.next.namespace === "kpr" || document.getElementById("harga")) {
+      setTimeout(() => {
+        initKPR();
+      }, 50);
+    }
+  });
+}
