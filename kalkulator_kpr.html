@@ -341,6 +341,7 @@
     }
 
     function formatInputRupiah(input) {
+      if (!input) return;
       let value = input.value.replace(/[^0-9]/g, "");
 
       if (value !== "") {
@@ -355,41 +356,29 @@
     // ========================================
 
     function hitungDPRupiah() {
-      const harga = bersihkanAngka(
-        document.getElementById("harga").value
-      );
+      const hargaElemen = document.getElementById("harga");
+      const dpPersenElemen = document.getElementById("dpPersen");
+      const dpRupiahElemen = document.getElementById("dpRupiah");
 
-      let dpPersen = parseFloat(
-        document.getElementById("dpPersen").value
-      ) || 0;
+      if (!hargaElemen || !dpPersenElemen || !dpRupiahElemen) return;
+
+      const harga = bersihkanAngka(hargaElemen.value);
+      let dpPersen = parseFloat(dpPersenElemen.value) || 0;
 
       if (dpPersen > 100) {
         dpPersen = 100;
-        document.getElementById("dpPersen").value = 100;
+        dpPersenElemen.value = 100;
       }
 
-      const dpRupiah = harga * dpPersen / 100;
-
-      document.getElementById("dpRupiah").value =
-        new Intl.NumberFormat("id-ID").format(dpRupiah);
+      const dpRupiah = (harga * dpPersen) / 100;
+      dpRupiahElemen.value = new Intl.NumberFormat("id-ID").format(dpRupiah);
     }
 
     function hitungKPR() {
-      const harga = bersihkanAngka(
-        document.getElementById("harga").value
-      );
-
-      const dp = bersihkanAngka(
-        document.getElementById("dpRupiah").value
-      );
-
-      const bungaTahunan = parseFloat(
-        document.getElementById("bunga").value
-      );
-
-      const tenorRaw = parseFloat(
-        document.getElementById("tenor").value
-      );
+      const harga = bersihkanAngka(document.getElementById("harga").value);
+      const dp = bersihkanAngka(document.getElementById("dpRupiah").value);
+      const bungaTahunan = parseFloat(document.getElementById("bunga").value);
+      const tenorRaw = parseFloat(document.getElementById("tenor").value);
 
       const errorMsg = document.getElementById("error-msg");
       const hasilContainer = document.getElementById("hasil-container");
@@ -421,7 +410,6 @@
       }
 
       const r = bungaTahunan / 100 / 12;
-
       let cicilanPerBulan;
 
       if (r === 0) {
@@ -444,7 +432,6 @@
 
     function buatTabelAmortisasi(pokokPinjaman, bungaTahunan, totalBulan, cicilanPerBulan) {
       dataAmortisasi = [];
-
       let saldo = pokokPinjaman;
       let bungaBulanan = bungaTahunan / 100 / 12;
 
@@ -505,14 +492,11 @@
       const totalBayar = cicilanGlobal * totalBulan;
       const totalBunga = totalBayar - pinjaman;
 
-      // HEADER
       doc.setFontSize(18);
       doc.text("SIMULASI KPR SH PROPERTY", 14, 15);
-
       doc.setFontSize(9);
       doc.text("Tanggal Cetak : " + new Date().toLocaleDateString("id-ID"), 14, 22);
 
-      // INFORMASI PROPERTI
       doc.setFontSize(12);
       doc.text("DETAIL PROPERTI", 14, 35);
       doc.setFontSize(10);
@@ -522,7 +506,6 @@
       doc.text("Bunga : " + bunga + "%", 14, 66);
       doc.text("Tenor : " + labelTenor, 14, 73);
 
-      // RINGKASAN PEMBIAYAAN
       doc.setFontSize(12);
       doc.text("RINGKASAN PEMBIAYAAN", 180, 35);
       doc.setFontSize(10);
@@ -531,10 +514,8 @@
       doc.text("Total Bunga : " + formatRupiahOutput(totalBunga), 180, 59);
       doc.text("Lama Kredit : " + totalBulan + " Bulan", 180, 66);
 
-      // GARIS PEMBATAS
       doc.line(14, 80, 280, 80);
 
-      // TABEL AMORTISASI
       doc.autoTable({
         startY: 85,
         head: [["Bulan", "Cicilan", "Pokok", "Bunga", "Sisa Pinjaman"]],
@@ -561,60 +542,48 @@
       const dpPersen = document.getElementById("dpPersen");
       const downloadPdf = document.getElementById("downloadPdf");
 
-      // 1. Bersihkan dan pasang ulang event listener (Harga)
+      // Gunakan inline arrow function langsung ke element target untuk memotong bug cache Barba
       if (harga) {
-        harga.removeEventListener("input", tanganiInputHarga);
-        harga.addEventListener("input", tanganiInputHarga);
-        
-        // Perbaikan Barba: Format paksa saat halaman render jika input membawa value default/cache
+        harga.oninput = function() {
+          formatInputRupiah(this);
+          hitungDPRupiah();
+        };
         if (harga.value) formatInputRupiah(harga); 
       }
 
-      // 2. Bersihkan dan pasang ulang event listener (DP Rupiah)
       if (dpRupiah) {
-        dpRupiah.removeEventListener("input", tanganiInputDP);
-        dpRupiah.addEventListener("input", tanganiInputDP);
-        
-        // Perbaikan Barba: Format paksa nilai rupiah DP yang muncul dari halaman sebelumnya
+        dpRupiah.oninput = function() {
+          formatInputRupiah(this);
+        };
         if (dpRupiah.value) formatInputRupiah(dpRupiah);
       }
 
-      // 3. Bersihkan dan pasang ulang event listener (DP Persen)
       if (dpPersen) {
-        dpPersen.removeEventListener("input", hitungDPRupiah);
-        dpPersen.addEventListener("input", hitungDPRupiah);
+        dpPersen.oninput = function() {
+          hitungDPRupiah();
+        };
       }
 
-      // 4. Bersihkan dan pasang ulang event listener (Tombol PDF)
       if (downloadPdf) {
-        downloadPdf.removeEventListener("click", generatePDF);
-        downloadPdf.addEventListener("click", generatePDF);
+        downloadPdf.onclick = function() {
+          generatePDF();
+        };
       }
 
-      // 5. Jalankan kalkulator DP secara sinkron di awal halaman baru termuat
       if (harga && dpPersen && !dpRupiah.value) {
         hitungDPRupiah();
       }
     }
 
-    function tanganiInputHarga() {
-      formatInputRupiah(this);
-      hitungDPRupiah();
-    }
-
-    function tanganiInputDP() {
-      formatInputRupiah(this);
-    }
-
     // 1. Jalankan saat pertama kali website dibuka (Tanpa Barba)
     document.addEventListener("DOMContentLoaded", initKPR);
 
-    // 2. Jalankan ulang dengan jeda mikro setelah Barba selesai transisi halaman
+    // 2. Jalankan ulang secara bersih saat Barba selesai melakukan transisi halaman
     if (typeof barba !== "undefined") {
       barba.hooks.afterEnter(() => {
         setTimeout(() => {
           initKPR();
-        }, 50); 
+        }, 100); 
       });
     }
 </script>
