@@ -166,7 +166,7 @@
                             type="number"
                             class="form-control"
                             name="tenor"
-                            placeholder="Contoh: 0.5 = 6 bulan, 1 = 1 tahun, 5 = 5 tahun"
+                            placeholder="Jangka Waktu (Tahun)"
                             required="" />
                         </div>
                         </div>
@@ -542,45 +542,50 @@
       const dpPersen = document.getElementById("dpPersen");
       const downloadPdf = document.getElementById("downloadPdf");
 
-      // Gunakan inline arrow function langsung ke element target untuk memotong bug cache Barba
+      // Pastikan hapus event listener lama jika ada (mencegah double trigger)
       if (harga) {
-        harga.oninput = function() {
-          formatInputRupiah(this);
-          hitungDPRupiah();
-        };
-        if (harga.value) formatInputRupiah(harga); 
+        harga.removeEventListener("input", tanganiInputHarga);
+        harga.addEventListener("input", tanganiInputHarga);
+        
+        // SOLUSI: Gunakan setTimeout ekstra atau langsung trigger input event 
+        // untuk memastikan value bawaan diformat setelah DOM stabil
+        setTimeout(() => {
+          if (harga.value) {
+            formatInputRupiah(harga); 
+            hitungDPRupiah(); // Pastikan DP ikut sinkron setelah harga diformat
+          }
+        }, 10);
       }
 
       if (dpRupiah) {
-        dpRupiah.oninput = function() {
-          formatInputRupiah(this);
-        };
-        if (dpRupiah.value) formatInputRupiah(dpRupiah);
+        dpRupiah.removeEventListener("input", tanganiInputDP);
+        dpRupiah.addEventListener("input", tanganiInputDP);
       }
 
       if (dpPersen) {
-        dpPersen.oninput = function() {
-          hitungDPRupiah();
-        };
+        dpPersen.removeEventListener("input", hitungDPRupiah);
+        dpPersen.addEventListener("input", hitungDPRupiah);
       }
 
       if (downloadPdf) {
-        downloadPdf.onclick = function() {
-          generatePDF();
-        };
+        downloadPdf.removeEventListener("click", generatePDF);
+        downloadPdf.addEventListener("click", generatePDF);
       }
 
-      if (harga && dpPersen && !dpRupiah.value) {
-        hitungDPRupiah();
+      // Jalankan kalkulator DP di awal load halaman baru
+      if (harga && dpPersen) {
+        // Dibungkus timeout agar sinkron dengan format harga di atas
+        setTimeout(() => {
+          hitungDPRupiah();
+        }, 15);
       }
     }
 
-    // 1. Jalankan saat pertama kali website dibuka (Tanpa Barba)
     document.addEventListener("DOMContentLoaded", initKPR);
 
-    // 2. Jalankan ulang secara bersih saat Barba selesai melakukan transisi halaman
     if (typeof barba !== "undefined") {
-      barba.hooks.afterEnter(() => {
+      // Menggunakan after agar benar-benar dijalankan setelah transisi selesai total
+      barba.hooks.after(() => {
         setTimeout(() => {
           initKPR();
         }, 100); 
