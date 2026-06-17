@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kalkulator KPR - SH Property</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon" />
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet" />
+
+    <!-- Vendor CSS Files -->
+    <link
+      href="assets/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      href="assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      rel="stylesheet" />
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet" />
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+    <link
+      href="assets/vendor/glightbox/css/glightbox.min.css"
+      rel="stylesheet" />
+
+    <!-- Main CSS File -->
+    <link href="assets/css/main.css" rel="stylesheet" />
+  </head>
+
+  <body data-barba="wrapper" data-barba-namespace="kalkulator_kpr" class="starter-page-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+      <div
+        class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+        <a
+          href="index.html"
+          class="logo d-flex align-items-center me-auto me-xl-0">
+          <!-- Uncomment the line below if you also wish to use an image logo -->
+          <!-- <img src="assets/img/logo.webp" alt=""> -->
+          <h1 class="sitename">SH Property</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <div class="nav-indicator"></div>
+          <ul>
+            <li><a href="index.html">Properti</a></li>
+            <li><a href="tentang.html">Tentang</a></li>
+            <li><a href="layanan.html">Layanan</a></li>
+            <li><a href="kalkulator_kpr.html">Kalkulator KPR</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
+            <li><a href="blog.html">Blog</a></li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+        <a class="btn-getstarted" href="#about">Get Started</a>
+      </div>
+    </header>
+
+  <main data-barba="container" data-barba-namespace="kalkulator_kpr">
+      <!-- Page Title -->
+      <div class="page-title dark-background" data-aos="fade">
+        <div class="container position-relative">
+          <h1>Kalkulator KPR</h1>
+          <p>
+            Hitung estimasi cicilan KPR Anda dengan mudah dan cepat
+          </p>
+          <nav class="breadcrumbs">
+            <ol>
+              <li><a href="index.html">Properti</a></li>
+              <li class="current">Kalkulator KPR</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+      <!-- End Page Title -->
+
+      <!-- Contact Section -->
+      <section id="contact" class="contact section">
+        <div class="container">
+          <div
+            class="row justify-content-center"
+            data-aos="fade-up"
+            data-aos-delay="300">
+            <div class="col-lg-10">
+              <div class="contact-form-wrapper">
+                <h2 class="text-center mb-4">Kalkulator KPR</h2>
+                <div class="row g-3 php-email-form">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="bi bi-cash"></i>
+                            <input
+                            id="harga"
+                            oninput="formatInputRupiah(this)"
+                            type="text"
+                            class="form-control"
+                            name="harga"
+                            placeholder="Harga"
+                            required="" />
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="bi bi-wallet"></i>
+                            <input
+                            id="dpPersen"
+                            type="text"
+                            class="form-control"
+                            name="dpPersen"
+                            placeholder="Uang Muka / DP (%)"
+                            required="" />
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="bi bi-wallet"></i>
+                            <input
+                            id="dpRupiah"
+                            oninput="formatInputRupiah(this)"
+                            type="text"
+                            class="form-control"
+                            name="dpRupiah"
+                            placeholder="Uang Muka / DP (Rp)"
+                            required="" readonly/>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="bi bi-percent"></i>
+                            <input
+                            id="bunga"
+                            type="number"
+                            class="form-control"
+                            name="bunga"
+                            placeholder="Suku Bunga Tahunan (%)"
+                            required=""
+                            step="0.1" />
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="bi bi-clock"></i>
+                            <input
+                            id="tenor"
+                            type="number"
+                            class="form-control"
+                            name="tenor"
+                            placeholder="Contoh: 0.5 = 6 bulan, 1 = 1 tahun, 5 = 5 tahun"
+                            required="" />
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="error-message" id="error-msg" style="display: none; color: red;">
+                        Mohon isi semua data dengan benar.
+                        </div>
+                        <div class="simulasi-card" id="hasil-container" style="display: none;">
+                            <div class="card-header text-center">
+                                <h3>Hasil Simulasi KPR</h3>
+                                <span>Estimasi Pembiayaan</span>
+                            </div>
+
+                            <div class="simulasi-item">
+                                <div class="label">Pokok Pinjaman</div>
+                                <div class="value" id="out-pokok">Rp 500.000.000</div>
+                            </div>
+
+                            <div class="simulasi-item cicilan">
+                                <div class="label">Cicilan per Bulan</div>
+                                <div class="value-highlight" id="out-cicilan">
+                                    Rp 4.964.016
+                                    <small>/ bulan</small>
+                              </div>
+
+                              <div class="text-center mt-3">
+                                <button
+                                  id="downloadPdf"
+                                  class="btn btn-danger"
+                                  style="display:none;">
+                                  <i class="bi bi-file-earmark-pdf"></i>
+                                  Download Simulasi PDF
+                                </button>
+                              </div>
+                              
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        <button
+                        type="button"
+                        onclick="hitungKPR()"
+                        class="btn btn-primary btn-submit">
+                        Kalkulasi
+                        </button>
+                    </div>
+                    </div>
+      </section>
+      <!-- /Contact Section -->
+
+      <footer id="footer" class="footer">
+      <div class="container footer-top">
+        <div class="row gy-4">
+          <div class="col-lg-5 col-md-12 footer-about">
+            <a href="index.html" class="logo d-flex align-items-center">
+              <span class="sitename">SH Property</span>
+            </a>
+            <p>
+              Kami membantu Anda menemukan properti impian dengan proses yang mudah, transparan, dan aman. Dengan pengalaman bertahun-tahun di industri properti, kami siap membantu Anda mewujudkan impian memiliki hunian idaman.
+            </p>
+            <div class="social-links d-flex mt-4">
+              <a href=""><i class="bi bi-twitter-x"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-2 col-6 footer-links">
+            <h4>Link Berguna</h4>
+            <ul>
+              <li><a href="index.html">Properti</a></li>
+              <li><a href="tentang.html">Tentang</a></li>
+              <li><a href="layanan.html">Layanan</a></li>
+              <li><a href="kalkulator_kpr.html">Kalkulator KPR</a></li>
+              <li><a href="kontak.html">Kontak</a></li>
+              <li><a href="blog.html">Blog</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-6 footer-links">
+            <h4>Layanan</h4>
+            <ul>
+              <li><a href="#">Pembelian properti</a></li>
+              <li><a href="#">Pemasaran Properti</a></li>
+              <li><a href="#">Konsultasi Properti</a></li>
+            </ul>
+          </div>
+
+          <div
+            class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+            <h4>Hubungi Kami</h4>
+            <p>Jl. Pahlawan No. 29 Durenjaya Bekasi Timur</p>
+            <p>Bekasi, Indonesia</p>
+            <p class="mt-4">
+              <strong>Phone:</strong> <span>+62 87844065005</span>
+            </p>
+            <p><strong>Email:</strong> <span>ujangreason17@gmail.com</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="container copyright text-center mt-4">
+        <p>
+          © <span>Copyright</span>
+          <strong class="px-1 sitename">SH Property</strong>
+          <span>All Rights Reserved</span>
+        </p>
+        <div class="credits">
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> |
+          <a href="https://bootstrapmade.com/tools/">DevTools</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scroll Top -->
+    <a
+      href="#"
+      id="scroll-top"
+      class="scroll-top d-flex align-items-center justify-content-center"
+      ><i class="bi bi-arrow-up-short"></i
+    ></a>
+
+    <!-- Preloader -->
+    <!-- <div id="preloader"></div> -->
+
+    </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script> 
+
+  <!-- Vendor JS Files -->
+    <!-- GSAP-->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <!-- BARBA -->
+    <script src="https://unpkg.com/@barba/core"></script>
+    <!-- VENDOR -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <!-- MAIN JS -->
+    <script src="assets/js/main.js"></script>
+
+    <!-- Main JS File -->
+
+    <script>
+    let dataAmortisasi = [];
+    let cicilanGlobal = 0; // Menyimpan nilai asli cicilan untuk kalkulasi PDF yang akurat
+
+    // ========================================
+    // FORMATTER UTILITY
+    // ========================================
+
+    function bersihkanAngka(stringFormat) {
+      return parseFloat(
+        (stringFormat || "").replace(/\./g, "")
+      ) || 0;
+    }
+
+    function formatRupiahOutput(angka) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(angka);
+    }
+
+    function formatInputRupiah(input) {
+      let value = input.value.replace(/[^0-9]/g, "");
+
+      if (value !== "") {
+        input.value = new Intl.NumberFormat("id-ID").format(value);
+      } else {
+        input.value = "";
+      }
+    }
+
+    // ========================================
+    // LOGIKA PERHITUNGAN KPR
+    // ========================================
+
+    function hitungDPRupiah() {
+      const harga = bersihkanAngka(
+        document.getElementById("harga").value
+      );
+
+      let dpPersen = parseFloat(
+        document.getElementById("dpPersen").value
+      ) || 0;
+
+      if (dpPersen > 100) {
+        dpPersen = 100;
+        document.getElementById("dpPersen").value = 100;
+      }
+
+      const dpRupiah = harga * dpPersen / 100;
+
+      document.getElementById("dpRupiah").value =
+        new Intl.NumberFormat("id-ID").format(dpRupiah);
+    }
+
+    function hitungKPR() {
+      const harga = bersihkanAngka(
+        document.getElementById("harga").value
+      );
+
+      const dp = bersihkanAngka(
+        document.getElementById("dpRupiah").value
+      );
+
+      const bungaTahunan = parseFloat(
+        document.getElementById("bunga").value
+      );
+
+      const tenorRaw = parseFloat(
+        document.getElementById("tenor").value
+      );
+
+      const errorMsg = document.getElementById("error-msg");
+      const hasilContainer = document.getElementById("hasil-container");
+
+      if (harga === 0 || dp === 0 || isNaN(bungaTahunan) || isNaN(tenorRaw)) {
+        errorMsg.style.display = "block";
+        errorMsg.textContent = "Mohon isi semua kolom dengan benar.";
+        hasilContainer.style.display = "none";
+        return;
+      }
+
+      const pokokPinjaman = harga - dp;
+
+      if (pokokPinjaman <= 0) {
+        errorMsg.style.display = "block";
+        errorMsg.textContent = "DP tidak boleh lebih besar dari harga properti.";
+        hasilContainer.style.display = "none";
+        return;
+      }
+
+      errorMsg.style.display = "none";
+
+      // LOGIKA BARU: Deteksi Tenor Bulan (< 1) atau Tahun (>= 1)
+      let n = 0;
+      if (tenorRaw < 1) {
+        n = Math.round(tenorRaw * 10); // Misal 0.6 jadi 6 Bulan
+      } else {
+        n = Math.round(tenorRaw * 12); // Misal 6 jadi 72 Bulan (6 Tahun)
+      }
+
+      const r = bungaTahunan / 100 / 12;
+
+      let cicilanPerBulan;
+
+      if (r === 0) {
+        cicilanPerBulan = pokokPinjaman / n;
+      } else {
+        const faktor = Math.pow(1 + r, n);
+        cicilanPerBulan = pokokPinjaman * ((r * faktor) / (faktor - 1));
+      }
+
+      // Amankan angka cicilan asli ke global variable
+      cicilanGlobal = cicilanPerBulan;
+
+      document.getElementById("out-pokok").textContent = formatRupiahOutput(pokokPinjaman);
+      document.getElementById("out-cicilan").textContent = formatRupiahOutput(cicilanPerBulan) + " / bulan";
+
+      hasilContainer.style.display = "block";
+      document.getElementById("downloadPdf").style.display = "inline-block";
+
+      buatTabelAmortisasi(pokokPinjaman, bungaTahunan, n, cicilanPerBulan);
+    }
+
+    function buatTabelAmortisasi(pokokPinjaman, bungaTahunan, totalBulan, cicilanPerBulan) {
+      dataAmortisasi = [];
+
+      let saldo = pokokPinjaman;
+      let bungaBulanan = bungaTahunan / 100 / 12;
+
+      const bulanIndonesia = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+
+      let tanggal = new Date();
+
+      for (let i = 1; i <= totalBulan; i++) {
+        let bunga = saldo * bungaBulanan;
+        let pokok = cicilanPerBulan - bunga;
+
+        saldo -= pokok;
+        if (saldo < 0) saldo = 0;
+
+        let namaBulan = bulanIndonesia[tanggal.getMonth()] + " " + tanggal.getFullYear();
+
+        dataAmortisasi.push([
+          namaBulan,
+          formatRupiahOutput(cicilanPerBulan),
+          formatRupiahOutput(pokok),
+          formatRupiahOutput(bunga),
+          formatRupiahOutput(saldo)
+        ]);
+
+        tanggal.setMonth(tanggal.getMonth() + 1);
+      }
+    }
+
+    // ========================================
+    // EXPORT PDF
+    // ========================================
+
+    function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF("l", "mm", "a4");
+
+      const harga = bersihkanAngka(document.getElementById("harga").value);
+      const dpRupiah = bersihkanAngka(document.getElementById("dpRupiah").value);
+      const dpPersen = document.getElementById("dpPersen").value;
+      const bunga = document.getElementById("bunga").value;
+      const tenorRaw = parseFloat(document.getElementById("tenor").value);
+
+      // LOGIKA BARU UNTUK LABEL & PERHITUNGAN PDF
+      let totalBulan = 0;
+      let labelTenor = "";
+
+      if (tenorRaw < 1) {
+        totalBulan = Math.round(tenorRaw * 10);
+        labelTenor = totalBulan + " Bulan";
+      } else {
+        totalBulan = Math.round(tenorRaw * 12);
+        labelTenor = tenorRaw + " Tahun";
+      }
+
+      const pinjaman = harga - dpRupiah;
+      
+      // Menggunakan cicilanGlobal agar hitungan matematika PDF akurat 100%
+      const totalBayar = cicilanGlobal * totalBulan;
+      const totalBunga = totalBayar - pinjaman;
+
+      // HEADER
+      doc.setFontSize(18);
+      doc.text("SIMULASI KPR SH PROPERTY", 14, 15);
+
+      doc.setFontSize(9);
+      doc.text("Tanggal Cetak : " + new Date().toLocaleDateString("id-ID"), 14, 22);
+
+      // INFORMASI PROPERTI
+      doc.setFontSize(12);
+      doc.text("DETAIL PROPERTI", 14, 35);
+      doc.setFontSize(10);
+      doc.text("Harga Properti : " + formatRupiahOutput(harga), 14, 45);
+      doc.text("DP : " + formatRupiahOutput(dpRupiah) + " (" + dpPersen + "%)", 14, 52);
+      doc.text("Pinjaman : " + formatRupiahOutput(pinjaman), 14, 59);
+      doc.text("Bunga : " + bunga + "%", 14, 66);
+      doc.text("Tenor : " + labelTenor, 14, 73);
+
+      // RINGKASAN PEMBIAYAAN
+      doc.setFontSize(12);
+      doc.text("RINGKASAN PEMBIAYAAN", 180, 35);
+      doc.setFontSize(10);
+      doc.text("Cicilan / Bulan : " + formatRupiahOutput(cicilanGlobal), 180, 45);
+      doc.text("Total Pembayaran : " + formatRupiahOutput(totalBayar), 180, 52);
+      doc.text("Total Bunga : " + formatRupiahOutput(totalBunga), 180, 59);
+      doc.text("Lama Kredit : " + totalBulan + " Bulan", 180, 66);
+
+      // GARIS PEMBATAS
+      doc.line(14, 80, 280, 80);
+
+      // TABEL AMORTISASI
+      doc.autoTable({
+        startY: 85,
+        head: [["Bulan", "Cicilan", "Pokok", "Bunga", "Sisa Pinjaman"]],
+        body: dataAmortisasi,
+        styles: { fontSize: 8, cellPadding: 2 },
+        headStyles: { fillColor: [13, 110, 253], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [245, 245, 245] }
+      });
+
+      // FOOTER
+      const pageHeight = doc.internal.pageSize.height;
+      doc.setFontSize(8);
+      doc.text("Generated by SH Property", 14, pageHeight - 5);
+
+      doc.save("Simulasi-KPR-SH-Property.pdf");
+    }
+
+    // ========================================
+    // INITIALIZATION & BARBA JS INTEGRATION
+    // ========================================
+    
+    function initKPR() {
+      const harga = document.getElementById("harga");
+      const dpRupiah = document.getElementById("dpRupiah");
+      const dpPersen = document.getElementById("dpPersen");
+      const downloadPdf = document.getElementById("downloadPdf");
+
+      // Pastikan hapus event listener lama jika ada (mencegah double trigger)
+      if (harga) {
+        harga.removeEventListener("input", tanganiInputHarga);
+        harga.addEventListener("input", tanganiInputHarga);
+        
+        // Format langsung saat halaman baru dimuat (jika sudah ada value default)
+        if(harga.value) formatInputRupiah(harga); 
+      }
+
+      if (dpRupiah) {
+        dpRupiah.removeEventListener("input", tanganiInputDP);
+        dpRupiah.addEventListener("input", tanganiInputDP);
+      }
+
+      if (dpPersen) {
+        dpPersen.removeEventListener("input", hitungDPRupiah);
+        dpPersen.addEventListener("input", hitungDPRupiah);
+      }
+
+      if (downloadPdf) {
+        downloadPdf.removeEventListener("click", generatePDF);
+        downloadPdf.addEventListener("click", generatePDF);
+      }
+
+      // Jalankan kalkulator DP di awal load halaman baru
+      if (harga && dpPersen) {
+        hitungDPRupiah();
+      }
+    }
+
+    // Fungsi handler terpisah agar bisa di-removeEventListener dengan bersih
+    function tanganiInputHarga() {
+      formatInputRupiah(this);
+      hitungDPRupiah();
+    }
+
+    function tanganiInputDP() {
+      formatInputRupiah(this);
+    }
+
+    // 1. Jalankan saat pertama kali website dibuka (Tanpa Barba)
+    document.addEventListener("DOMContentLoaded", initKPR);
+
+    // 2. Jalankan ulang dengan jeda mikro setelah Barba selesai transisi halaman
+    if (typeof barba !== "undefined") {
+      barba.hooks.afterEnter(() => {
+        setTimeout(() => {
+          initKPR();
+        }, 50); // Jeda 50ms memastikan DOM baru milik Barba sudah sepenuhnya render
+      });
+    }
+</script>
+     
+</body>
+</html>
