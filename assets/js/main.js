@@ -293,7 +293,7 @@
               AOS.refreshHard();
             }
 
-            console.log("Barba Page Loaded");
+            // console.log("Barba Page Loaded");
           },
         },
       ],
@@ -356,8 +356,10 @@
   document.addEventListener("scroll", toggleScrolled);
 })();
 
+// kalkulator kpr
+
 let dataAmortisasi = [];
-let cicilanGlobal = 0; // Menyimpan nilai asli cicilan untuk kalkulasi PDF yang akurat
+let cicilanGlobal = 0;
 
 // ========================================
 // FORMATTER UTILITY
@@ -598,23 +600,24 @@ function initKPR() {
   const dpRupiah = document.getElementById("dpRupiah");
   const dpPersen = document.getElementById("dpPersen");
   const downloadPdf = document.getElementById("downloadPdf");
-  const btnHitung = document.getElementById("btnHitung"); // Pastikan id tombol hitung Anda sesuai
+  const btnHitung = document.getElementById("btnHitung");
 
-  // Jika element tidak ditemukan di halaman aktif, hentikan fungsi agar tidak error
-  if (!harga) return;
+  // 1. Logika untuk form Harga & DP
+  if (harga) {
+    if (harga.value) formatInputRupiah(harga);
 
-  // Reset value formatting jika halaman baru dimuat
-  if (harga.value) formatInputRupiah(harga);
-  if (dpRupiah && dpRupiah.value) formatInputRupiah(dpRupiah);
+    harga.oninput = function () {
+      formatInputRupiah(this);
+      hitungDPRupiah();
+    };
 
-  // Gunakan penugasan event langsung (bukan addEventListener)
-  // untuk mencegah penumpukan event listener akibat cache Barba
-  harga.oninput = function () {
-    formatInputRupiah(this);
-    hitungDPRupiah();
-  };
+    if (dpPersen && !dpRupiah.value) {
+      hitungDPRupiah();
+    }
+  }
 
   if (dpRupiah) {
+    if (dpRupiah.value) formatInputRupiah(dpRupiah);
     dpRupiah.oninput = function () {
       formatInputRupiah(this);
     };
@@ -626,6 +629,7 @@ function initKPR() {
     };
   }
 
+  // 2. Logika untuk Tombol Hitung
   if (btnHitung) {
     btnHitung.onclick = function (e) {
       e.preventDefault();
@@ -633,10 +637,11 @@ function initKPR() {
     };
   }
 
+  // 3. Logika untuk Tombol Download PDF
   if (downloadPdf) {
     downloadPdf.onclick = function (e) {
       e.preventDefault();
-      generatePDF();
+      generatePDF(); // Pastikan fungsi generatePDF() juga tidak error
     };
   }
 
