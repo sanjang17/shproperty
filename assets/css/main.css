@@ -1174,45 +1174,35 @@ section,
   border-radius: 8px;
   overflow: hidden;
 }
-
 .about .about-image .experience-badge {
   position: absolute;
   bottom: 30px;
-  right: -30px;
+  right: -20px;
+
   background: var(--accent-color);
   color: var(--contrast-color);
-  padding: 1.5rem;
+
+  padding: 1rem 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
-  min-width: 140px;
+
+  min-width: 180px; /* tambah lebar */
+  white-space: nowrap; /* cegah teks turun/potong */
 }
 
 .about .about-image .experience-badge .years {
-  font-size: 2.5rem;
+  display: block;
+  font-size: 2rem;
   font-weight: 700;
   line-height: 1;
-  display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .about .about-image .experience-badge .text {
-  font-size: 0.9rem;
-  text-transform: uppercase;
+  display: block;
+  font-size: 0.8rem;
   letter-spacing: 1px;
-}
-
-@media (max-width: 768px) {
-  .about .about-image .experience-badge {
-    right: 0;
-    bottom: 20px;
-    padding: 1rem;
-    min-width: 120px;
-  }
-
-  .about .about-image .experience-badge .years {
-    font-size: 2rem;
-  }
+  text-transform: uppercase;
 }
 
 .about .about-content h2 {
@@ -5160,9 +5150,44 @@ section,
 }
 
 .value-highlight {
-  color: #fff;
-  font-size: 42px;
-  font-weight: 800;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.value-highlight small {
+  display: block;
+  font-size: 1.2rem;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .value-highlight {
+    font-size: 1.8rem;
+  }
+
+  .value-highlight small {
+    font-size: 1rem;
+  }
+
+  #out-pokok {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .value-highlight {
+    font-size: 1.5rem;
+  }
+
+  .value-highlight small {
+    font-size: 0.9rem;
+  }
+
+  #out-pokok {
+    font-size: 1.2rem;
+  }
 }
 
 .loading,
