@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sanjang17.github.io/shproperty/sitemap.xml
